@@ -25,29 +25,28 @@ Para instalar librerias se debe ingresar por terminal a la carpeta "libs"
 """
 
 base_path = tmp_global_obj["basepath"]
-cur_path = base_path + 'modules' + os.sep + 'Browser' + os.sep + 'libs' + os.sep
+cur_path = base_path + 'modules' + os.sep + 'browser_automation' + os.sep + 'libs' + os.sep
 sys.path.append(cur_path)
-import websockets
 
+import websockets
+import connection_server
 global websockets
 
 module = GetParams("module")
 
 if module == "click":
-    import asyncio
 
-    async def hello():
-        uri = "ws://localhost:8000"
-        async with websockets.connect(uri) as websocket:
-            name = input("What's your name? ")
-
-            await websocket.send(name)
-            print(f"> {name}")
-
-            greeting = await websocket.recv()
-            print(f"< {greeting}")
-
-
-    asyncio.get_event_loop().run_until_complete(hello())
-
-
+    data_selector = GetParams("data")
+    data_type = GetParams("data_type")
+    wait_seconds = GetParams("wait")
+    try:
+        instruction = {
+            "typeSelector": data_type,
+            "selector": data_selector,
+            "command": "click"
+        }
+        connection_server.asyncio.get_event_loop().run_until_complete(connection_server.send_command_to_extension(instruction))
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\u2193\x1B[" + "0m")
+        PrintException()
+        raise e
