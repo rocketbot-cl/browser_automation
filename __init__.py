@@ -35,7 +35,8 @@ global websockets
 module = GetParams("module")
 
 
-async def send_command_to_extension(instruction):
+async def send_command_to_extension(instruction, result=None):
+    import json
     try:
         uri = "ws://localhost:8000"
         async with websockets.connect(uri) as websocket:
@@ -43,13 +44,16 @@ async def send_command_to_extension(instruction):
             await websocket.send(instruction)
             print("Instruction: " + str(instruction))
             extension_response = await websocket.recv()
+            print(type(extension_response))
             extension_response_json = json.loads(extension_response)
-            print("Respuesta: " + str(extension_response_json))
-            #if extension_response_json['status'] != 200:
-            #    return
+            print("Respuesta: ", type(extension_response_json))
+            if extension_response_json['status'] != 200:
+                raise Exception(extension_response_json['status'])
+            if result is not None:
+                SetVar(result, extension_response_json['response'])
     except Exception as e:
-        print("\x1B[" + "31;40mAn error occurred\u2193\x1B[" + "0m")
-        #PrintException()
+        #print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
         raise e
 
 if module == "click":
@@ -68,8 +72,8 @@ if module == "click":
         print("La instruccion es la siguiente: " + str(instruction))
         connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
     except Exception as e:
-        print("\x1B[" + "31;40mAn error occurred\u2193\x1B[" + "0m")
-        PrintException()
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        
         raise e
 
 if module == "getText":
@@ -86,9 +90,9 @@ if module == "getText":
         }
         instruction = json.dumps(instruction)
         print("La instruccion es la siguiente: " + str(instruction))
-        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
+        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction, result))
     except Exception as e:
-        print("\x1B[" + "31;40mAn error occurred\u2193\x1B[" + "0m")
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
 
@@ -108,7 +112,7 @@ if module == "sendkeys":
         print("La instruccion es la siguiente: " + str(instruction))
         connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
     except Exception as e:
-        print("\x1B[" + "31;40mAn error occurred\u2193\x1B[" + "0m")
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
 
@@ -125,6 +129,20 @@ if module == "sendText":
         }
         connection_server.asyncio.get_event_loop().run_until_complete(connection_server.send_command_to_extension(instruction))
     except Exception as e:
-        print("\x1B[" + "31;40mAn error occurred\u2193\x1B[" + "0m")
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "openUrl":    
+    import webbrowser
+    import subprocess
+    url = GetParams("url")
+    try:
+        #print("\n \n \n HOLAAAAAAAAAAAAAAAAA nico :3")
+        chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+        subprocess.Popen(f"{chrome_path} {url}")
+        #webbrowser.open(url)
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
