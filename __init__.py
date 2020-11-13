@@ -101,12 +101,11 @@ if module == "sendkeys":
     data_selector = GetParams("data")
     data_type = GetParams("data_type")
     result = GetParams("result")
-    print("******************************************* \n \n")
     try:
         instruction = {
             "typeSelector": data_type,
             "selector": data_selector,
-            "command": "getValue"
+            "command": "setValue"
         }
         instruction = json.dumps(instruction)
         print("La instruccion es la siguiente: " + str(instruction))
@@ -117,7 +116,6 @@ if module == "sendkeys":
         raise e
 
 if module == "sendText":
-
     data_selector = GetParams("data")
     data_type = GetParams("data_type")
     wait_seconds = GetParams("wait")
@@ -125,9 +123,9 @@ if module == "sendText":
         instruction = {
             "typeSelector": data_type,
             "selector": data_selector,
-            "command": "click"
+            "command": "setValue"
         }
-        connection_server.asyncio.get_event_loop().run_until_complete(connection_server.send_command_to_extension(instruction))
+        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
