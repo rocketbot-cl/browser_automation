@@ -271,8 +271,8 @@
               "es": "Dato a buscar",
               "en": "Data to search"
             },
-            "id": "text",
-            "css": "col-md-12"
+            "id": "data",
+            "css": "col-md-6"
           },
           {
             "type": "select",
@@ -284,6 +284,52 @@
             "title": {
               "es": "Tipo de dato",
               "en": "Data type"
+            },
+            "options": [
+              {
+                "title": "name",
+                "value": "name"
+              },
+              {
+                "title": "id",
+                "value": "id"
+              },
+              {
+                "title": "class",
+                "value": "class name"
+              },
+              {
+                "title": "xpath",
+                "value": "xpath"
+              },
+              {
+                "title": "tag",
+                "value": "tag name"
+              }
+            ],
+            "id": "data_type",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "",
+            "title": {
+              "es": "Texto a enviar",
+              "en": "Text"
+            },
+            "id": "text",
+            "css": "col-md-6"
+          },
+          {
+            "type": "select",
+            "placeholder": {
+              "es": "",
+              "en": "",
+              "cn": ""
+            },
+            "title": {
+              "es": "Tecla especial",
+              "en": "Special Keys"
             },
             "options": [
               {
@@ -476,7 +522,7 @@
               }
             ],
             "id": "special",
-            "css": "col-md-12"
+            "css": "col-md-6"
           }
         ]
       },
@@ -494,16 +540,25 @@
     },
     {
       "title": {
-        "es": "Abrir URL",
-        "en": "Open URL"
+        "es": "Abrir Navegador",
+        "en": "Open Browser"
       },
       "description": {
-        "es": "Abre una página en el navegador seleccionado.",
-        "en": "Open a page in the selected browser"
+        "es": "Abre el navegador seleccionado.",
+        "en": "Open a selected browser"
       },
       "form": {
         "css": "modal-lg",
         "inputs": [
+          {
+            "type": "file_select",
+            "title": {
+              "es": "Ruta del navegador a abrir",
+              "en": "Browser Path"
+            },
+            "id": "path",
+            "css": "col-md-9"
+          },
           {
             "type": "input",
             "placeholder": "",

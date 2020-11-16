@@ -30,6 +30,7 @@ sys.path.append(cur_path)
 
 import websockets
 import connection_server
+from time import sleep
 global websockets
 
 module = GetParams("module")
@@ -81,7 +82,6 @@ if module == "getText":
     data_selector = GetParams("data")
     data_type = GetParams("data_type")
     result = GetParams("result")
-    print("******************************************* \n \n")
     try:
         instruction = {
             "typeSelector": data_type,
@@ -100,16 +100,20 @@ if module == "sendkeys":
     import json 
     data_selector = GetParams("data")
     data_type = GetParams("data_type")
-    result = GetParams("result")
+    text = GetParams("text")
+    special = GetParams("special")
     try:
         instruction = {
             "typeSelector": data_type,
             "selector": data_selector,
             "command": "setValue"
         }
-        instruction = json.dumps(instruction)
-        print("La instruccion es la siguiente: " + str(instruction))
-        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
+        if text or special:
+            instruction["data"] = text if text else special
+
+            instruction = json.dumps(instruction)
+            print("La instruccion es la siguiente: " + str(instruction))
+            connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
@@ -131,15 +135,13 @@ if module == "sendText":
         PrintException()
         raise e
 
-if module == "openUrl":    
-    import webbrowser
+if module == "openUrl":
     import subprocess
     url = GetParams("url")
+    path = GetParams("path")
     try:
-        #print("\n \n \n HOLAAAAAAAAAAAAAAAAA nico :3")
-        chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-        subprocess.Popen(f"{chrome_path} {url}")
-        #webbrowser.open(url)
+        subprocess.Popen(f"{path} {url}")
+        sleep(10)
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
