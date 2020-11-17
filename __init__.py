@@ -43,17 +43,13 @@ async def send_command_to_extension(instruction, result=None):
         async with websockets.connect(uri) as websocket:
             print("Sendig data to extension...")
             await websocket.send(instruction)
-            print("Instruction: " + str(instruction))
             extension_response = await websocket.recv()
-            print(type(extension_response))
             extension_response_json = json.loads(extension_response)
-            print("Respuesta: ", type(extension_response_json))
             if extension_response_json['status'] != 200:
                 raise Exception(extension_response_json['status'])
             if result is not None:
                 SetVar(result, extension_response_json['response'])
     except Exception as e:
-        #print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
 
@@ -62,7 +58,7 @@ if module == "click":
     data_selector = GetParams("data")
     data_type = GetParams("data_type")
     result = GetParams("result")
-    print("******************************************* \n \n")
+    click_type = GetParams("click_type")
     try:
         instruction = {
             "typeSelector": data_type,
@@ -70,7 +66,6 @@ if module == "click":
             "command": "click"
         }
         instruction = json.dumps(instruction)
-        print("La instruccion es la siguiente: " + str(instruction))
         connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
@@ -89,7 +84,6 @@ if module == "getText":
             "command": "getValue"
         }
         instruction = json.dumps(instruction)
-        print("La instruccion es la siguiente: " + str(instruction))
         connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction, result))
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
@@ -100,48 +94,63 @@ if module == "sendkeys":
     import json 
     data_selector = GetParams("data")
     data_type = GetParams("data_type")
-    text = GetParams("text")
     special = GetParams("special")
     try:
         instruction = {
             "typeSelector": data_type,
             "selector": data_selector,
-            "command": "setValue"
+            "command": "setValue",
+            "data": special
         }
-        if text or special:
-            instruction["data"] = text if text else special
-
-            instruction = json.dumps(instruction)
-            print("La instruccion es la siguiente: " + str(instruction))
-            connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
-    except Exception as e:
-        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
-        PrintException()
-        raise e
-
-if module == "sendText":
-    data_selector = GetParams("data")
-    data_type = GetParams("data_type")
-    wait_seconds = GetParams("wait")
-    try:
-        instruction = {
-            "typeSelector": data_type,
-            "selector": data_selector,
-            "command": "setValue"
-        }
+        instruction = json.dumps(instruction)
         connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
 
-if module == "openUrl":
+if module == "sendText":
+    import json 
+    data_selector = GetParams("data")
+    data_type = GetParams("data_type")
+    text = GetParams("text")
+    try:
+        instruction = {
+            "typeSelector": data_type,
+            "selector": data_selector,
+            "command": "setValue",
+            "data": text
+        }
+        instruction = json.dumps(instruction)
+        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "openBrowser":
     import subprocess
     url = GetParams("url")
     path = GetParams("path")
     try:
         subprocess.Popen(f"{path} {url}")
         sleep(10)
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "openUrl":
+    import json
+    url = GetParams("url")
+    try:
+        instruction = {
+            "typeSelector": '',
+            "selector": '',
+            "command": "openUrl",
+            "data": url
+        }
+        instruction = json.dumps(instruction)
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
