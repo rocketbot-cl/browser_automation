@@ -155,3 +155,30 @@ if module == "openUrl":
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
+
+if module == "waitObject":
+    import json
+    
+    data_type = GetParams("data_type")
+    data_selector = GetParams("data")
+    waitBefore = GetParams("waitBefore")
+    waitMax = GetParams("waitMax")
+    waitAfter = GetParams("waitAfter")
+    try:
+        data = {
+            "waitBefore": waitBefore,
+            "waitMax": waitMax,
+            "waitAfter": waitAfter
+        }
+        instruction = {
+            "typeSelector": data_type,
+            "selector": data_selector,
+            "command": "waitObject",
+            "data": data
+        }
+        instruction = json.dumps(instruction)
+        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
