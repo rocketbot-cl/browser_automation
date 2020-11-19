@@ -151,6 +151,7 @@ if module == "openUrl":
             "data": url
         }
         instruction = json.dumps(instruction)
+        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
@@ -158,17 +159,18 @@ if module == "openUrl":
 
 if module == "waitObject":
     import json
+    from time import sleep
     
     data_type = GetParams("data_type")
     data_selector = GetParams("data")
     waitBefore = GetParams("waitBefore")
     waitMax = GetParams("waitMax")
     waitAfter = GetParams("waitAfter")
+    result = GetParams("result")
+    
     try:
         data = {
-            "waitBefore": waitBefore,
             "waitMax": waitMax,
-            "waitAfter": waitAfter
         }
         instruction = {
             "typeSelector": data_type,
@@ -177,7 +179,29 @@ if module == "waitObject":
             "data": data
         }
         instruction = json.dumps(instruction)
-        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
+        if waitBefore:
+            sleep(int(waitBefore))
+        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction, result))
+        if waitAfter:
+            sleep(int(waitAfter))
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "getTable":
+    import json 
+    data_selector = GetParams("data")
+    data_type = GetParams("data_type")
+    result = GetParams("result")
+    try:
+        instruction = {
+            "typeSelector": data_type,
+            "selector": data_selector,
+            "command": "getValue"
+        }
+        instruction = json.dumps(instruction)
+        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction, result))
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
