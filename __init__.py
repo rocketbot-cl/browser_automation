@@ -206,3 +206,8 @@ if module == "getTable":
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
+
+if module == "takeScreenshot":
+    path = GetParams("path")
+    location = GetParams("location")
+    size = GetParams("size")
