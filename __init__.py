@@ -208,6 +208,21 @@ if module == "getTable":
         raise e
 
 if module == "takeScreenshot":
-    path = GetParams("path")
-    location = GetParams("location")
-    size = GetParams("size")
+    import json 
+    data_selector = GetParams("data")
+    data_type = GetParams("data_type")
+    name = GetParams("name")
+    try:
+        instruction = {
+            "typeSelector": data_type,
+            "selector": data_selector,
+            "command": "takeScreenshot",
+            "data": name
+        }
+        instruction = json.dumps(instruction)
+        print("La instruccion es: " + str(instruction))
+        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
