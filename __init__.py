@@ -198,7 +198,7 @@ if module == "getTable":
         instruction = {
             "typeSelector": data_type,
             "selector": data_selector,
-            "command": "getValue"
+            "command": "getTable"
         }
         instruction = json.dumps(instruction)
         connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction, result))
