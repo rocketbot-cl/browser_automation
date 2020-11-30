@@ -226,3 +226,30 @@ if module == "takeScreenshot":
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
+
+if module == "executeJs":
+    import json 
+    script = GetParams("cualquiercosa")
+    script_path = GetParams("script_path")
+    if script and script_path:
+        raise Exception("No puede elegir ambos campos, seleccione uno solo.")
+    try:
+        instruction = {
+                "typeSelector": '',
+                "selector": '',
+                "command": "executeJs"
+            }
+        if script is not None:
+            instruction["data"] = script
+        if script_path is not None:
+            script_file = open(script_path)
+            script_content = script_file.read()
+            print(script_content)
+            instruction["data"] = script_content
+        instruction = json.dumps(instruction)
+        print("La instruccion es: " + str(instruction))
+        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
