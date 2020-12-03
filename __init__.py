@@ -28,10 +28,12 @@ base_path = tmp_global_obj["basepath"]
 cur_path = base_path + 'modules' + os.sep + 'browser_automation' + os.sep + 'libs' + os.sep
 sys.path.append(cur_path)
 
+from selenium.webdriver import Chrome
+from selenium.webdriver.chrome.options import Options
 import websockets
 import connection_server
 from time import sleep
-global websockets
+global browser_driver
 
 module = GetParams("module")
 
@@ -143,8 +145,20 @@ if module == "openBrowser":
     url = GetParams("url")
     path = GetParams("path")
     try:
-        subprocess.Popen(f"{path} {url}")
-        sleep(10)
+        import subprocess
+
+        platform_ = platform.system()
+        subprocess.Popen(f"{path} --remote-debugging-port=5004")
+        chrome_options = Options()
+        chrome_options.debugger_address = "127.0.0.1:5004"
+        if platform_.endswith('dows'):
+            chrome_driver = os.path.join(base_path, os.path.normpath(r"drivers\win\chrome"), "chromedriver.exe")
+        else:
+            chrome_driver = os.path.join(base_path, os.path.normpath(r"drivers/mac/chrome"), "chromedriver")
+        browser_driver = Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
+        if url:
+            browser_driver.get(url)
+
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
