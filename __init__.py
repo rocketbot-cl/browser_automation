@@ -53,6 +53,16 @@ async def send_command_to_extension(instruction, result=None):
         PrintException()
         raise e
 
+if module == "connect":
+
+    server_app = base_path + 'modules/browser_automation/bin/server.exe'
+    script_path = base_path + 'modules/browser_automation/libs/script.js'
+    instruction = {
+        "data": script_path
+    }
+    connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
+
+
 if module == "click":
     import json 
     data_selector = GetParams("data")
