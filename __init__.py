@@ -168,14 +168,8 @@ if module == "openUrl":
     import json
     url = GetParams("url")
     try:
-        instruction = {
-            "typeSelector": '',
-            "selector": '',
-            "command": "openUrl",
-            "data": url
-        }
-        instruction = json.dumps(instruction)
-        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction))
+
+        browser_driver.get(url)
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
@@ -184,6 +178,15 @@ if module == "openUrl":
 if module == "waitObject":
     import json
     from time import sleep
+    from selenium.webdriver import ActionChains
+
+    types = {
+        "name": By.NAME,
+        "id": By.ID,
+        "class name": By.CLASS_NAME,
+        "xpath": By.XPATH,
+        "tag name": By.TAG_NAME
+    }
     
     data_type = GetParams("data_type")
     data_selector = GetParams("data")
@@ -193,21 +196,15 @@ if module == "waitObject":
     result = GetParams("result")
     
     try:
-        data = {
-            "waitMax": waitMax,
-        }
-        instruction = {
-            "typeSelector": data_type,
-            "selector": data_selector,
-            "command": "waitObject",
-            "data": data
-        }
-        instruction = json.dumps(instruction)
-        if waitBefore:
-            sleep(int(waitBefore))
-        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction, result))
-        if waitAfter:
-            sleep(int(waitAfter))
+
+        actionChains = ActionChains(browser_driver)
+        wait = WebDriverWait(browser_driver, int(waitMax))
+
+        elementLocator = wait.until(EC.visibility_of_element_located((types[data_type], data_selector)))
+        SetVar(result, True)
+    except TimeoutException:
+        SetVar(result, False)
+
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
@@ -219,13 +216,51 @@ if module == "getTable":
     data_type = GetParams("data_type")
     result = GetParams("result")
     try:
-        instruction = {
-            "typeSelector": data_type,
-            "selector": data_selector,
-            "command": "getTable"
-        }
-        instruction = json.dumps(instruction)
-        connection_server.asyncio.get_event_loop().run_until_complete(send_command_to_extension(instruction, result))
+        SCRIPT_ROCKET = """function getElementBy(by, value) {
+  switch (by) {
+    case "xpath":
+      return document.getElementByXPath(value);
+    case "id":
+      return document.getElementById(value);
+    case "name":
+      return document.getElementsByName(value)[0];
+    case "jspath":
+      return document.querySelector(value);
+    case "tag":
+      return document.getElementsByTagName(value)[0];
+    default:
+      break;
+  }
+}
+document.getElementByXPath = function (sValue) {
+  var a = this.evaluate(
+    sValue,
+    this,
+    null,
+    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+    null
+  );
+  if (a.snapshotLength > 0) {
+    return a.snapshotItem(0);
+  }
+};
+function getTable(table){
+  var data = [];
+  for (var t = 0; t < table.rows.length; t++) {
+    var d = [];
+    for (var c = 0; c < table.rows[t].cells.length; c++) {
+      d.push(table.rows[t].cells[c].innerText);
+    }
+    data.push(d);
+  }
+  console.log("Data:")
+  console.log(data)
+  //return JSON.stringify(data);
+  return data;
+};"""
+        res = browser_driver.execute_script(SCRIPT_ROCKET + f" return getTable(getElementBy('{data_type}','{data_selector}'))")
+        SetVar(result, res)
+
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
