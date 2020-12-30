@@ -42,14 +42,15 @@ module = GetParams("module")
 if module == "openBrowser":
     import subprocess
     web = GetGlobals('web')
-    web.driver_list[web.driver_actual_id] = browser_driver
+
     url = GetParams("url")
     path = GetParams("path")
     try:
         import subprocess
 
         platform_ = platform.system()
-        subprocess.Popen(f"{path} --remote-debugging-port=5009")
+        res = subprocess.Popen(f"{path} --remote-debugging-port=5009")
+        print(res)
         chrome_options = Options()
         chrome_options.debugger_address = "127.0.0.1:5009"
         if platform_.endswith('dows'):
@@ -57,11 +58,16 @@ if module == "openBrowser":
         else:
             chrome_driver = os.path.join(base_path, os.path.normpath(r"drivers/mac/chrome"), "chromedriver")
         browser_driver = Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
+
         web.driver_list[web.driver_actual_id] = browser_driver
         if url:
             browser_driver.get(url)
+
 
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
+
+if module == "closeBrowser":
+    browser_driver.close()
