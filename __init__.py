@@ -31,8 +31,6 @@ sys.path.append(cur_path)
 from selenium.webdriver import Chrome
 from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
-import websockets
-import connection_server
 from time import sleep
 global browser_driver
 
@@ -49,8 +47,8 @@ if module == "openBrowser":
         import subprocess
 
         platform_ = platform.system()
-        res = subprocess.Popen(f"{path} --remote-debugging-port=5009")
-        print(res)
+        profile = base_path + 'modules' + os.sep + 'browser_automation' + os.sep + 'profile' + os.sep
+        res = subprocess.Popen(f"{path} --remote-debugging-port=5009 --user-data-dir={profile}")
         chrome_options = Options()
         chrome_options.debugger_address = "127.0.0.1:5009"
         if platform_.endswith('dows'):
@@ -62,7 +60,6 @@ if module == "openBrowser":
         web.driver_list[web.driver_actual_id] = browser_driver
         if url:
             browser_driver.get(url)
-
 
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
