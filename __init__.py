@@ -48,9 +48,9 @@ if module == "openBrowser":
 
         platform_ = platform.system()
         profile = base_path + 'modules' + os.sep + 'browser_automation' + os.sep + 'profile' + os.sep
-        res = subprocess.Popen(f"{path} --remote-debugging-port=5009 --user-data-dir={profile}")
+        res = subprocess.Popen(f"{path} --remote-debugging-port=5005 --user-data-dir={profile}")
         chrome_options = Options()
-        chrome_options.debugger_address = "127.0.0.1:5009"
+        chrome_options.debugger_address = "127.0.0.1:5005"
         if platform_.endswith('dows'):
             chrome_driver = os.path.join(base_path, os.path.normpath(r"drivers\win\chrome"), "chromedriver.exe")
         else:
@@ -68,3 +68,4 @@ if module == "openBrowser":
 
 if module == "closeBrowser":
     browser_driver.close()
+    browser_driver.quit()

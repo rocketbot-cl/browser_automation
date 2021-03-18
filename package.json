@@ -9,7 +9,7 @@
   "mac": true,
   "docker": true,
   "name": "browser_automation",
-  "version": "1.0",
+  "version": "1.1",
   "title": {
     "en": "browser_automation",
     "es": "browser_automation",
