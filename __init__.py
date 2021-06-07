@@ -58,7 +58,7 @@ class BrowserAutomation:
         "chrome": {
             "Windows": r"C:\Program Files\Google\Chrome\Application\chrome.exe",
             "Linux": "/usr/bin/google-chrome",
-            "Darwin": "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+            "Darwin": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
         }
     }
 

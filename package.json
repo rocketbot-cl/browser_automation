@@ -30,15 +30,6 @@
         "css": "modal-lg",
         "inputs": [
           {
-            "type": "file_select",
-            "title": {
-              "es": "Ruta del navegador a abrir",
-              "en": "Browser Path"
-            },
-            "id": "path",
-            "css": "col-md-12"
-          },
-          {
             "type": "select",
             "placeholder": {
               "es": "",
