@@ -49,19 +49,12 @@ module = GetParams("module")
 class BrowserAutomation:
     global BASE_PATH, systems, SYSTEM
 
+
     DRIVERS = {
         "chrome": "chromedriver",
         "firefox": "x64" + os.sep + "geckodriver"
     }
-
-    BROWSER_PATHS = {
-        "chrome": {
-            "Windows": r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-            "Linux": "/usr/bin/google-chrome",
-            "Darwin": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-        }
-    }
-
+   
     def __init__(self, browser="chrome", driver_path=None, browser_path=""):
         self.driver_path = driver_path
         self.browser = browser
@@ -83,9 +76,17 @@ class BrowserAutomation:
 
     @property
     def browser_path(self):
+        BROWSER_PATHS = {
+            "chrome": {
+                "Windows": 'start "" chrome',
+                "Linux": "/usr/bin/google-chrome",
+                "Darwin": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+            }
+        }
+
         if self.__browser_path:
             return self.__browser_path
-        return self.BROWSER_PATHS[self.browser][SYSTEM]
+        return BROWSER_PATHS[self.browser][SYSTEM]
 
     @browser_path.setter
     def browser_path(self, path):
@@ -93,7 +94,7 @@ class BrowserAutomation:
 
     def launch_browser(self):
         import subprocess
-        subprocess.Popen([self.browser_path, "--remote-debugging-port="+self.port, "--user-data-dir=" + self.profile_path])
+        subprocess.Popen(" ".join([self.browser_path, "--remote-debugging-port="+self.port, "--user-data-dir=" + self.profile_path]), shell=True)
     
     def open(self):
         global Options, Chrome
@@ -103,7 +104,13 @@ class BrowserAutomation:
             chrome_options.debugger_address = "127.0.0.1:" + self.port
             self.driver = Chrome(chrome_options=chrome_options, executable_path=self.driver_path)
             return self.driver
-        
+
+    @staticmethod
+    def search_chrome_windows():
+        if os.path.exists(r"C:\Program Files\Google\Chrome\Application\chrome.exe"):
+            return r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+
+        return r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
 
 if module == "openBrowser":
 
