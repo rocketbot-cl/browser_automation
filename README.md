@@ -9,6 +9,10 @@ Module to avoid captchas and work with web pages that don't Selenium support.
 
 ![alt text](https://i.imgur.com/peOnT10.png)
 
+## Updates
+### 7- Jul - 2021
+- Fix 'open browser' command: error when rocketbot path has spaces
+
 
 <h2>License</h2>
 

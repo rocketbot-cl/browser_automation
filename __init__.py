@@ -60,7 +60,7 @@ class BrowserAutomation:
         self.browser = browser
         self.browser_path = browser_path
         self.port = "5005"
-        self.profile_path = os.path.join(BASE_PATH,'modules','browser_automation','profile')
+        self.profile_path = os.path.join(BASE_PATH,'modules','browser_automation','profile').replace(" ", "' '")
 
     @property
     def driver_path(self):
@@ -105,12 +105,6 @@ class BrowserAutomation:
             self.driver = Chrome(chrome_options=chrome_options, executable_path=self.driver_path)
             return self.driver
 
-    @staticmethod
-    def search_chrome_windows():
-        if os.path.exists(r"C:\Program Files\Google\Chrome\Application\chrome.exe"):
-            return r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-
-        return r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
 
 if module == "openBrowser":
 
