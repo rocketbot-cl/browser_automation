@@ -55,13 +55,13 @@ class BrowserAutomation:
         "firefox": "x64" + os.sep + "geckodriver"
     }
    
-    def __init__(self, browser="chrome", driver_path=None, browser_path=""):
+    def __init__(self, browser="chrome", driver_path=None, browser_path="", folderPath=""):
         self.driver_path = driver_path
         self.browser = browser
         self.browser_path = browser_path
         self.port = "5005"
-        self.profile_path = os.path.join(BASE_PATH,'modules','browser_automation','profile').replace(" ", "' '")
-
+        self.profile_path = folderPath if " " not in folderPath else "\"" + folderPath + "\""
+    
     @property
     def driver_path(self):
         if self.__driver_path:
@@ -94,7 +94,7 @@ class BrowserAutomation:
 
     def launch_browser(self):
         import subprocess
-        subprocess.Popen(" ".join([self.browser_path, "--remote-debugging-port="+self.port, "--user-data-dir=" + self.profile_path]), shell=True)
+        subprocess.Popen(" ".join([self.browser_path, "--remote-debugging-port="+self.port, "--user-data-dir=" + self.profile_path + ""]), shell=True)
     
     def open(self):
         global Options, Chrome
@@ -111,12 +111,14 @@ if module == "openBrowser":
     url = GetParams("url")
     path = GetParams("path")
     browser = GetParams("browser")
+    folder = GetParams("folder")
+    print(folder)
 
     try:
         if path:
             browser = "chrome"
 
-        browser_automation = BrowserAutomation(browser, browser_path=path)
+        browser_automation = BrowserAutomation(browser, browser_path=path, folderPath=folder)
         browser_driver = browser_automation.open()
 
         web.driver_list[web.driver_actual_id] = browser_driver

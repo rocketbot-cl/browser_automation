@@ -57,7 +57,28 @@
             },
             "id": "url",
             "css": "col-md-6"
-          }
+          },
+          {
+            "type": "folder_select",
+            "placeholder": {
+                "es": "Ruta a Carpeta",
+                "en": "Path to folder"
+            },
+            "description": {
+                "es": "Descripción detallada del input. Estará en la documentación del módulo",
+                "en": "Detailed description of the input. It will be in the module documentation"
+            },
+            "title": {
+                "es": "Seleccionar una carpeta:",
+                "en": "Select a Folder:"
+            },
+            "help": {
+                "es": "Ruta a la carpeta",
+                "en": "Path to folder"
+            },
+            "id": "folder",
+            "css": "col-md-6"
+        }
         ]
       },
       "linux": true,
