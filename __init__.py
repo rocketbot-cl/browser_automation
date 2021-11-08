@@ -116,7 +116,7 @@ if module == "openBrowser":
     path = GetParams("path")
     browser = GetParams("browser")
     folder = GetParams("folder")
-    if folder == None:
+    if folder == None or folder == "":
         folder = " "
 
     try:
