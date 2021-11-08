@@ -1,23 +1,45 @@
+
+
+
+
 # browser_automation
+  
 Module to avoid captchas and work with web pages that don't Selenium support.
 
-## Commands
-<ul class="commands_readme">
-    <li>Open Browser</li>
-    <li>Close Browser</li>
-</ul>
+## Howto install this module
+  
+__Download__ and __install__ the content in 'modules' folder in Rocketbot path
+## How to use this module
 
-![alt text](https://i.imgur.com/peOnT10.png)
+To use this module, select the browser you want to utillize, enter the URL you want to go to, and if you want to use a profile folder, select it or leave it empty to use rocketbot default profile (just for testing).
 
-## Updates
+## Overview
+
+
+1. Open Browser  
+Open a selected browser
+
+2. Close Browser  
+Close a selected browser
+### Updates
+
+### 8- Nov - 2021
+- Fix 'open browser' command: errors with profile folder.
+
 ### 7- Jul - 2021
 - Fix 'open browser' command: error when rocketbot path has spaces
 
+----
+### OS
 
-<h2>License</h2>
+- windows
+- mac
+- linux
+- docker
 
-<p><a href="http://badges.mit-license.org" rel="nofollow"><img src="https://camo.githubusercontent.com/107590fac8cbd65071396bb4d04040f76cde5bde/687474703a2f2f696d672e736869656c64732e696f2f3a6c6963656e73652d6d69742d626c75652e7376673f7374796c653d666c61742d737175617265" alt="License" data-canonical-src="http://img.shields.io/:license-mit-blue.svg?style=flat-square" style="max-width:100%;"></a></p>
+### Dependencies
 
-<ul>
-  <li><strong><a href="http://opensource.org/licenses/mit-license.php" rel="nofollow">MIT license</a></strong></li>
-</ul>  
+### License
+  
+![MIT](https://camo.githubusercontent.com/107590fac8cbd65071396bb4d04040f76cde5bde/687474703a2f2f696d672e736869656c64732e696f2f3a6c6963656e73652d6d69742d626c75652e7376673f7374796c653d666c61742d737175617265)  
+[MIT](http://opensource.org/licenses/mit-license.ph)

@@ -10,6 +10,7 @@
   "docker": true,
   "name": "browser_automation",
   "version": "2.1",
+  "dependencies": {},
   "title": {
     "en": "browser_automation",
     "es": "browser_automation",
@@ -39,18 +40,38 @@
               "es": "Navegador ",
               "en": "Browser "
             },
+            "description": {
+                "es": "Navegador que se desea usar.",
+                "en": "Browser you want to use."
+            },
+            "help": {
+                "es": "Navegador a utilizar",
+                "en": "Browser to utilize"
+            },
             "options": [
               {
                 "title": "Chrome",
                 "value": "chrome"
               }
+              
             ],
             "id": "browser",
             "css": "col-md-6"
           },
           {
             "type": "input",
-            "placeholder": "",
+            "placeholder": {
+                "en" : "https://rocketbot.com/en",
+                "es" : "https://rocketbot.com/es"
+            },
+            "description": {
+                "es": "Direccion a la cual se desea acceder.",
+                "en": "URL where to go."
+            },
+            "help": {
+                "es": "Ruta a la carpeta",
+                "en": "Path to folder"
+            },
             "title": {
               "es": "URL",
               "en": "URL"
@@ -65,8 +86,8 @@
                 "en": "Path to folder"
             },
             "description": {
-                "es": "Descripción detallada del input. Estará en la documentación del módulo",
-                "en": "Detailed description of the input. It will be in the module documentation"
+                "es": "Carpeta de perfil (dejar en blanco si se desea tomar la carpeta por default de rocketbot para pruebas).",
+                "en": "Profile forlder (leave empty to use default rocketbot folder for testing)."
             },
             "title": {
                 "es": "Seleccionar una carpeta:",
