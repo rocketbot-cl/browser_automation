@@ -60,7 +60,11 @@ class BrowserAutomation:
         self.browser = browser
         self.browser_path = browser_path
         self.port = "5005"
-        self.profile_path = folderPath if " " not in folderPath else "\"" + folderPath + "\""
+        if folderPath != " ":
+            self.profile_path = folderPath if " " not in folderPath else "\"" + folderPath + "\""
+        else:
+            folderPath = os.path.join(BASE_PATH,'modules','browser_automation','profile')
+            self.profile_path = folderPath if " " not in folderPath else "\"" + folderPath + "\""
     
     @property
     def driver_path(self):
@@ -112,7 +116,8 @@ if module == "openBrowser":
     path = GetParams("path")
     browser = GetParams("browser")
     folder = GetParams("folder")
-    print(folder)
+    if folder == None:
+        folder = " "
 
     try:
         if path:
