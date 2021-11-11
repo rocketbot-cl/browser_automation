@@ -4,7 +4,7 @@
 
 # browser_automation
   
-Module to avoid captchas and work with web pages that don't Selenium support.
+Module to automate web pages and avoiding "your web browser is been use by a robot" message.
 
 ## Howto install this module
   
