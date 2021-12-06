@@ -68,10 +68,6 @@
                 "es": "Direccion a la cual se desea acceder.",
                 "en": "URL where to go."
             },
-            "help": {
-                "es": "Ruta a la carpeta",
-                "en": "Path to folder"
-            },
             "title": {
               "es": "URL",
               "en": "URL"
