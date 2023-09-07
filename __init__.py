@@ -30,11 +30,16 @@ from selenium.webdriver import Chrome
 from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
 import platform
+import socket
+import time
 
 BASE_PATH = tmp_global_obj["basepath"] # Rocketbot path
 cur_path = BASE_PATH + 'modules' + os.sep + 'browser_automation' + os.sep + 'libs' + os.sep
+uc_path = BASE_PATH + 'modules' + os.sep + 'browser_automation' + os.sep + 'libs' + os.sep + 'src' + os.sep
 if cur_path not in sys.path:
     sys.path.append(cur_path)
+if uc_path not in sys.path:
+    sys.path.append(uc_path)
 
 
 systems = {
@@ -47,8 +52,8 @@ SYSTEM = platform.system()
 web = GetGlobals('web')
 module = GetParams("module")
 class BrowserAutomation:
-    global BASE_PATH, systems, SYSTEM
-
+    global BASE_PATH, systems, SYSTEM, socket, time
+    
 
     DRIVERS = {
         "chrome": "chromedriver",
@@ -56,10 +61,23 @@ class BrowserAutomation:
     }
    
     def __init__(self, browser="chrome", driver_path=None, browser_path="", folderPath=""):
+        self.driver = None
         self.driver_path = driver_path
         self.browser = browser
         self.browser_path = browser_path
-        self.port = "5005"
+        soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.port = "5002"
+        
+        for i in range(2, 11):
+            port_ = 5000 + i
+            result = soc.connect_ex(('127.0.0.1', port_))
+            p = subprocess.Popen(f'netstat -a | find "127.0.0.1:{port_}"', stdout=subprocess.PIPE, shell=True)
+            output, err = p.communicate()
+            if not "established" in output.decode().lower():
+                print(output.decode().lower())
+                self.port = str(port_)
+                break
+        
         if folderPath != " ":
             self.profile_path = folderPath if " " not in folderPath else "\"" + folderPath + "\""
         else:
@@ -108,6 +126,33 @@ class BrowserAutomation:
             chrome_options.debugger_address = "127.0.0.1:" + self.port
             self.driver = Chrome(chrome_options=chrome_options, executable_path=self.driver_path)
             return self.driver
+    
+    def open_undetected(self):
+        global Options, Chrome
+        self.launch_browser()
+        if self.browser == "chrome":
+            import r_undetected_chromedriver as uc
+            print(uc.__file__)
+            # uc.install(
+            #     executable_path = self.driver_path ,
+            # )
+            options = uc.ChromeOptions()
+            options.add_argument('--no-sandbox')
+            # options.add_argument('--headless')
+            # options.add_argument('--enable-javascript')
+            # options.add_argument('--disable-gpu')
+            # options.experimental_options["debuggerAddress"] = "127.0.0.1:" + self.port
+            options.debugger_address = "127.0.0.1:" + self.port
+            user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15'
+            options.add_argument('User-Agent={0}'.format(user_agent))
+            options.user_data_dir = self.profile_path
+            print(self.driver_path)
+            self.driver = uc.Chrome(options=options, browser_executable_path=self.driver_path, executable_path=self.driver_path)
+            print("opening")
+            # chrome_options = Options()
+            # chrome_options.debugger_address = "127.0.0.1:" + self.port
+            # self.driver = Chrome(chrome_options=chrome_options, executable_path=self.driver_path)
+            return self.driver
 
 
 if module == "openBrowser":
@@ -122,23 +167,25 @@ if module == "openBrowser":
     try:
         if path:
             browser = "chrome"
-
         browser_automation = BrowserAutomation(browser, browser_path=path, folderPath=folder)
-        browser_driver = browser_automation.open()
+        
+        if browser == 'undetected_chrome':
+            browser_driver = browser_automation.open_undetected()
+        else:
+            browser_driver = browser_automation.open()
 
         web.driver_list[web.driver_actual_id] = browser_driver
         if url:
             browser_driver.get(url)
 
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
 
 if module == "closeBrowser":
     browser_driver = web.driver_list[web.driver_actual_id]
-    browser_windows = browser_driver.window_handles
-    for window in browser_windows:
-        browser_driver.switch_to.window(window)
-        browser_driver.close()
+    browser_driver.close()
     browser_driver.quit()
