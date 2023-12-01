@@ -26,6 +26,8 @@ Abre el navegador seleccionado.
 |Navegador |Navegador que se desea usar.||
 |URL|Direccion a la cual se desea acceder.|https://rocketbot.com/es|
 |Seleccionar una carpeta|Carpeta de perfil (dejar en blanco si se desea tomar la carpeta por default de rocketbot para pruebas).|Ruta a Carpeta|
+|Puerto (Optional)|Puerto para abrir el debugger de Chrome|5002|
+|Buscar puerto libre (Optional)||checkbox|
 
 ### Cerrar Navegador
   

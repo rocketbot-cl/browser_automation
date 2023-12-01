@@ -32,6 +32,7 @@ from selenium.webdriver.chrome.options import Options
 import platform
 import socket
 import time
+import subprocess
 
 BASE_PATH = tmp_global_obj["basepath"] # Rocketbot path
 cur_path = BASE_PATH + 'modules' + os.sep + 'browser_automation' + os.sep + 'libs' + os.sep
@@ -54,29 +55,29 @@ module = GetParams("module")
 class BrowserAutomation:
     global BASE_PATH, systems, SYSTEM, socket, time
     
-
     DRIVERS = {
         "chrome": "chromedriver",
         "firefox": "x64" + os.sep + "geckodriver"
     }
    
-    def __init__(self, browser="chrome", driver_path=None, browser_path="", folderPath=""):
+    def __init__(self, browser="chrome", driver_path=None, browser_path="", folderPath="", port="5002", search=False):
         self.driver = None
         self.driver_path = driver_path
         self.browser = browser
         self.browser_path = browser_path
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.port = "5002"
+        self.port = port
         
-        for i in range(2, 11):
-            port_ = 5000 + i
-            result = soc.connect_ex(('127.0.0.1', port_))
-            p = subprocess.Popen(f'netstat -a | find "127.0.0.1:{port_}"', stdout=subprocess.PIPE, shell=True)
-            output, err = p.communicate()
-            if not "established" in output.decode().lower():
-                print(output.decode().lower())
-                self.port = str(port_)
-                break
+        if search:
+            for i in range(2, 11):
+                port_ = 5000 + i
+                result = soc.connect_ex(('127.0.0.1', port_))
+                p = subprocess.Popen(f'netstat -a | find "127.0.0.1:{port_}"', stdout=subprocess.PIPE, shell=True)
+                output, err = p.communicate()
+                if not "established" in output.decode().lower():
+                    print(output.decode().lower())
+                    self.port = str(port_)
+                    break
         
         if folderPath != " ":
             self.profile_path = folderPath if " " not in folderPath else "\"" + folderPath + "\""
@@ -161,13 +162,21 @@ if module == "openBrowser":
     path = GetParams("path")
     browser = GetParams("browser")
     folder = GetParams("folder")
+    port = GetParams("port")
+    search_port = GetParams("search_port")
+    
     if folder == None or folder == "":
         folder = " "
 
+    if port == None or port == "":
+        port = "5002"
+        
+    if search_port == None or search_port == "":
+        search_port = False
+    
     try:
-        if path:
-            browser = "chrome"
-        browser_automation = BrowserAutomation(browser, browser_path=path, folderPath=folder)
+        browser_ = "chrome"
+        browser_automation = BrowserAutomation(browser_, browser_path=path, folderPath=folder, port=port, search=search_port)
         
         if browser == 'undetected_chrome':
             browser_driver = browser_automation.open_undetected()

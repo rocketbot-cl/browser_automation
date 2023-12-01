@@ -14,7 +14,7 @@
   "mac": true,
   "docker": true,
   "name": "browser_automation",
-  "version": "2.4.0",
+  "version": "2.4.2",
   "dependencies": {},
   "title": {
     "en": "browser_automation",
@@ -103,6 +103,44 @@
             },
             "id": "folder",
             "css": "col-md-6"
+        },
+        {
+          "type": "input",
+          "placeholder": {
+              "en" : "5002",
+              "es" : "5002"
+          },
+          "description": {
+              "es": "Puerto para abrir el debugger de Chrome",
+              "en": "Port to open Chrome debugger"
+          },
+          "title": {
+            "es": "Puerto (Optional)",
+            "en": "Port (Optional)"
+          },
+          "help": {
+            "es": "Por defecto: 5002",
+            "en": "Default: 5002"
+          },
+          "id": "port",
+          "css": "col-md-3"
+        },
+        {
+          "type": "checkbox",
+          "placeholder": {
+              "en" : "checkbox",
+              "es" : "checkbox"
+          },
+          "description": {
+              "es": "",
+              "en": ""
+          },
+          "title": {
+            "es": "Buscar puerto libre (Optional)",
+            "en": "Search free port (Optional)"
+          },
+          "id": "search_port",
+          "css": "col-md-3"
         }
         ]
       },

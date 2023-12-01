@@ -8,7 +8,7 @@ Module to perform web actions using the browser extension
 
 *Read this in other languages: [English](Manual_browser_automation.md), [Português](Manual_browser_automation.pr.md), [Español](Manual_browser_automation.es.md)*
   
-![banner](imgs/Banner_browser_automation.png)
+![banner](imgs/Banner_browser_automation.png o jpg)
 ## How to install this module
   
 To install the module in Rocketbot Studio, it can be done in two ways:
@@ -26,6 +26,8 @@ Open a selected browser
 |Browser |Browser you want to use.||
 |URL|URL where to go.|https://rocketbot.com/en|
 |Select a Folder|Profile forlder (leave empty to use default rocketbot folder for testing).|Path to folder|
+|Port (Optional)|Port to open Chrome debugger|5002|
+|Search free port (Optional)||checkbox|
 
 ### Close Browser
   
