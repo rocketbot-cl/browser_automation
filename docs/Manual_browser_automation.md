@@ -1,7 +1,3 @@
-
-
-
-
 # browser_automation
   
 Module to perform web actions using the browser extension  
@@ -34,3 +30,4 @@ Open a selected browser
 Close a selected browser
 |Parameters|Description|example|
 | --- | --- | --- |
+
