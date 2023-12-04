@@ -4,14 +4,16 @@
 
 # browser_automation
   
-Module to automate web pages and avoiding "your web browser is been use by a robot" message.
+Module to perform web actions using the browser extension  
 
-## Howto install this module
+*Read this in other languages: [English](README.md), [Português](README.pr.md), [Español](README.es.md)*
+
+## How to install this module
   
-__Download__ and __install__ the content in 'modules' folder in Rocketbot path
-## How to use this module
+To install the module in Rocketbot Studio, it can be done in two ways:
+1. Manual: __Download__ the .zip file and unzip it in the modules folder. The folder name must be the same as the module and inside it must have the following files and folders: \__init__.py, package.json, docs, example and libs. If you have the application open, refresh your browser to be able to use the new module.
+2. Automatic: When entering Rocketbot Studio on the right margin you will find the **Addons** section, select **Install Mods**, search for the desired module and press install.  
 
-To use this module, select the browser you want to utillize, enter the URL you want to go to, and if you want to use a profile folder, select it or leave it empty to use rocketbot default profile (just for testing).
 
 ## Overview
 
@@ -20,14 +22,10 @@ To use this module, select the browser you want to utillize, enter the URL you w
 Open a selected browser
 
 2. Close Browser  
-Close a selected browser
-### Updates
+Close a selected browser  
 
-### 8- Nov - 2021
-- Fix 'open browser' command: errors with profile folder.
 
-### 7- Jul - 2021
-- Fix 'open browser' command: error when rocketbot path has spaces
+
 
 ----
 ### OS
