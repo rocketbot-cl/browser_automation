@@ -1,10 +1,6 @@
-
-
-
-
 # browser_automation
   
-Module to perform web actions using the browser extension  
+This module opens the browser without the alert that it is automated. Useful for working with extensions, captcha and desktopRecorder  
 
 *Read this in other languages: [English](README.md), [Português](README.pr.md), [Español](README.es.md)*
 

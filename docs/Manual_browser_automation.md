@@ -1,10 +1,10 @@
 # browser_automation
   
-Module to perform web actions using the browser extension  
+This module opens the browser without the alert that it is automated. Useful for working with extensions, captcha and desktopRecorder  
 
 *Read this in other languages: [English](Manual_browser_automation.md), [Português](Manual_browser_automation.pr.md), [Español](Manual_browser_automation.es.md)*
   
-![banner](imgs/Banner_browser_automation.png o jpg)
+![banner](imgs/Banner_browser_automation.png)
 ## How to install this module
   
 To install the module in Rocketbot Studio, it can be done in two ways:
@@ -19,15 +19,16 @@ To install the module in Rocketbot Studio, it can be done in two ways:
 Open a selected browser
 |Parameters|Description|example|
 | --- | --- | --- |
-|Browser |Browser you want to use.||
-|URL|URL where to go.|https://rocketbot.com/en|
-|Select a Folder|Profile forlder (leave empty to use default rocketbot folder for testing).|Path to folder|
-|Port (Optional)|Port to open Chrome debugger|5002|
-|Search free port (Optional)||checkbox|
+|Browser|Browser you want to use.|Chrome|
+|URL|URL to access.|https://rocketbot.com/en|
+|Profile folder (Optional)|Profile folder (leave empty to use default rocketbot folder for testing).|C:/Users/User/Desktop/browser_profile|
+|Port (Optional)|Port in which the automated browser will open. (Optional)|5002|
+|Search free port (Optional)|Search for a free port to open the automated browser. (Optional)|False|
+|Activate accessibility features|Activates the browser's accessibility features.|False|
 
 ### Close Browser
   
 Close a selected browser
 |Parameters|Description|example|
 | --- | --- | --- |
-
+| --- | --- | --- |

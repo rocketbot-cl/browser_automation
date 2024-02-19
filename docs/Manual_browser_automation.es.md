@@ -1,10 +1,6 @@
-
-
-
-
 # browser_automation
   
-Módulo para realizar acciones web usando la extension del navegador  
+Este modulo abre el navegador sin la alerta de que es automatizado. Útil para trabajar con extensiones, captcha y desktopRecorder  
 
 *Read this in other languages: [English](Manual_browser_automation.md), [Português](Manual_browser_automation.pr.md), [Español](Manual_browser_automation.es.md)*
   
@@ -23,14 +19,16 @@ Para instalar el módulo en Rocketbot Studio, se puede hacer de dos formas:
 Abre el navegador seleccionado.
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
-|Navegador |Navegador que se desea usar.||
+|Navegador|Navegador que se desea usar.|Chrome|
 |URL|Direccion a la cual se desea acceder.|https://rocketbot.com/es|
-|Seleccionar una carpeta|Carpeta de perfil (dejar en blanco si se desea tomar la carpeta por default de rocketbot para pruebas).|Ruta a Carpeta|
-|Puerto (Optional)|Puerto para abrir el debugger de Chrome|5002|
-|Buscar puerto libre (Optional)||checkbox|
+|Carpeta de perfil (Opcional)|Carpeta de perfil (dejar en blanco si se desea tomar la carpeta por default de rocketbot para pruebas).|C:/Users/Usuario/Desktop/perfil_navegador|
+|Puerto (Optional)|Puerto en el cual se abrirá el navegador automatizado. (Opcional)|5002|
+|Buscar puerto libre (Optional)|Buscar puerto libre en el cual se abrirá el navegador automatizado. (Opcional)|False|
+|Activar características de accesibilidad|Activa las características de accesibilidad del navegador.|False|
 
 ### Cerrar Navegador
   
 Cierra el navegador seleccionado.
 |Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
 | --- | --- | --- |
