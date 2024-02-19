@@ -26,15 +26,14 @@ Para instalar librerias se debe ingresar por terminal a la carpeta "libs"
 
 import sys
 import os
-from selenium.webdriver import Chrome
-from selenium.webdriver import ActionChains
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver import Chrome # type: ignore
+from selenium.webdriver import ActionChains # type: ignore
+from selenium.webdriver.chrome.options import Options # type: ignore
 import platform
 import socket
-import time
 import subprocess
 
-BASE_PATH = tmp_global_obj["basepath"] # Rocketbot path
+BASE_PATH = tmp_global_obj["basepath"] # type: ignore
 cur_path = BASE_PATH + 'modules' + os.sep + 'browser_automation' + os.sep + 'libs' + os.sep
 uc_path = BASE_PATH + 'modules' + os.sep + 'browser_automation' + os.sep + 'libs' + os.sep + 'src' + os.sep
 if cur_path not in sys.path:
@@ -50,10 +49,15 @@ systems = {
 }
 SYSTEM = platform.system()
 
+GetGlobals = GetGlobals # type: ignore
+GetParams = GetParams # type: ignore
+SetVar = SetVar # type: ignore
+PrintException = PrintException # type: ignore
+
 web = GetGlobals('web')
 module = GetParams("module")
 class BrowserAutomation:
-    global BASE_PATH, systems, SYSTEM, socket, time
+    global BASE_PATH, systems, SYSTEM, socket
     
     DRIVERS = {
         "chrome": "chromedriver",
@@ -115,30 +119,36 @@ class BrowserAutomation:
     def browser_path(self, path):
         self.__browser_path = path
 
-    def launch_browser(self):
+    def launch_browser(self, force_renderer=False):
         import subprocess
-        subprocess.Popen(" ".join([self.browser_path, "--remote-debugging-port="+self.port, "--user-data-dir=" + self.profile_path + ""]), shell=True)
+        if force_renderer:
+            print("for renderer")
+            subprocess.Popen(" ".join([self.browser_path, "--force-renderer-accessibility --kiosk-printing --remote-debugging-port="+self.port, "--user-data-dir=" + self.profile_path + ""]), shell=True)
+        else:
+            subprocess.Popen(" ".join([self.browser_path, "--remote-debugging-port="+self.port, "--user-data-dir=" + self.profile_path + ""]), shell=True)
     
-    def open(self):
+    def open(self, force_renderer=False):
         global Options, Chrome
-        self.launch_browser()
+        self.launch_browser(force_renderer=force_renderer)
         if self.browser == "chrome":
             chrome_options = Options()
             chrome_options.debugger_address = "127.0.0.1:" + self.port
             self.driver = Chrome(chrome_options=chrome_options, executable_path=self.driver_path)
             return self.driver
     
-    def open_undetected(self):
+    def open_undetected(self, force_renderer=False):
         global Options, Chrome
         self.launch_browser()
         if self.browser == "chrome":
-            import r_undetected_chromedriver as uc
+            import r_undetected_chromedriver as uc # type: ignore
             print(uc.__file__)
             # uc.install(
             #     executable_path = self.driver_path ,
             # )
             options = uc.ChromeOptions()
             options.add_argument('--no-sandbox')
+            if force_renderer:
+                options.add_argument('--force-renderer-accessibility')
             # options.add_argument('--headless')
             # options.add_argument('--enable-javascript')
             # options.add_argument('--disable-gpu')
@@ -164,6 +174,7 @@ if module == "openBrowser":
     folder = GetParams("folder")
     port = GetParams("port")
     search_port = GetParams("search_port")
+    force_renderer = eval(GetParams("force_renderer_accessibility")) if GetParams("force_renderer_accessibility") else False
     
     if folder == None or folder == "":
         folder = " "
@@ -179,9 +190,9 @@ if module == "openBrowser":
         browser_automation = BrowserAutomation(browser_, browser_path=path, folderPath=folder, port=port, search=search_port)
         
         if browser == 'undetected_chrome':
-            browser_driver = browser_automation.open_undetected()
+            browser_driver = browser_automation.open_undetected(force_renderer=force_renderer)
         else:
-            browser_driver = browser_automation.open()
+            browser_driver = browser_automation.open(force_renderer=force_renderer)
 
         web.driver_list[web.driver_actual_id] = browser_driver
         if url:
