@@ -268,6 +268,23 @@ class Patcher(object):
                 match = re.search(rb"platform_handle\x00content\x00([0-9.]*)", line)
                 if match:
                     return LooseVersion(match[1].decode())
+                
+    def get_base_url(self):
+        """
+        Returns the base URL for the download of chromedriver.
+        :return: Base URL
+        """
+        import requests
+        from urllib.parse import urlparse, urlunparse
+        json_url = 'https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json'
+        get_json = requests.get(json_url)
+        data = get_json.json()
+        base_full_url = data.get('channels').get('Stable').get('downloads').get('chromedriver')[0].get('url')
+        parsed_url = urlparse(base_full_url)
+        path_parts = parsed_url.path.split('/')
+        new_path = '/'.join(path_parts[:-3])
+        base_url = urlunparse((parsed_url.scheme, parsed_url.netloc, new_path, '', '', ''))
+        return base_url
 
     def fetch_package(self):
         """
@@ -280,8 +297,10 @@ class Patcher(object):
             download_url = "%s/%s/%s" % (self.url_repo, self.version_full.vstring, zip_name)
         else:
             zip_name = zip_name.replace("_", "-", 1)
-            download_url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/%s/%s/%s"
-            download_url %= (self.version_full.vstring, self.platform_name, zip_name)
+            base_url = self.get_base_url()
+            download_url = f"{base_url}/{self.version_full.vstring}/{self.platform_name}/{zip_name}"
+            # download_url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/%s/%s/%s"
+            # download_url %= (self.version_full.vstring, self.platform_name, zip_name)
 
         logger.debug("downloading from %s" % download_url)
         return urlretrieve(download_url)[0]
