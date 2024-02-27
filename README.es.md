@@ -1,10 +1,6 @@
-
-
-
-
 # browser_automation
   
-Módulo para realizar acciones web usando la extension del navegador  
+Este modulo abre el navegador sin la alerta de que es automatizado. Útil para trabajar con extensiones, captcha y desktopRecorder  
 
 *Read this in other languages: [English](README.md), [Português](README.pr.md), [Español](README.es.md)*
 
