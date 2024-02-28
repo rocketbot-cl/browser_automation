@@ -14,7 +14,7 @@
     "mac": true,
     "docker": true,
     "name": "browser_automation",
-    "version": "2.5.0",
+    "version": "2.6.0",
     "dependencies": {},
     "title": {
         "en": "browser_automation",

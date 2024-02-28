@@ -125,7 +125,7 @@ class BrowserAutomation:
             print("for renderer")
             subprocess.Popen(" ".join([self.browser_path, "--force-renderer-accessibility --kiosk-printing --remote-debugging-port="+self.port, "--user-data-dir=" + self.profile_path + ""]), shell=True)
         else:
-            subprocess.Popen(" ".join([self.browser_path, "--remote-debugging-port="+self.port, "--user-data-dir=" + self.profile_path + ""]), shell=True)
+            subprocess.Popen(" ".join([self.browser_path, "--kiosk-printing --remote-debugging-port="+self.port, "--user-data-dir=" + self.profile_path + ""]), shell=True)
     
     def open(self, force_renderer=False):
         global Options, Chrome
