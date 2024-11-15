@@ -460,7 +460,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
 
 
         service = selenium.webdriver.chromium.service.ChromiumService(
-            self.patcher.executable_path
+            options.binary_location # with this we can use the Rocketbot chromedriver instead of the most recent one
         )
 
         super(Chrome, self).__init__(
