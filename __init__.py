@@ -207,8 +207,9 @@ if module == "openBrowser":
 
 if module == "closeBrowser":
     browser_driver = web.driver_list[web.driver_actual_id]
-    browser_windows = browser_driver.window_handles
-    for window in browser_windows:
-        browser_driver.switch_to.window(window)
-        browser_driver.close()
+    # browser_windows = browser_driver.window_handles
+    # for window in browser_windows:
+    #     browser_driver.switch_to.window(window)
+    #     browser_driver.close()
+    browser_driver.close()
     browser_driver.quit()
