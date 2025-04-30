@@ -255,7 +255,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
             user_multi_procs=user_multi_procs,
         )
         # self.patcher.auto(user_multiprocess = user_multi_num_procs)
-        self.patcher.auto()
+        # self.patcher.auto()
 
         # self.patcher = patcher
         if not options:
@@ -460,7 +460,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
 
 
         service = selenium.webdriver.chromium.service.ChromiumService(
-            self.patcher.executable_path
+            options.binary_location # with this we can use the Rocketbot chromedriver instead of the most recent one
         )
 
         super(Chrome, self).__init__(
