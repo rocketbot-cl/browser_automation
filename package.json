@@ -14,7 +14,7 @@
     "mac": true,
     "docker": true,
     "name": "browser_automation",
-    "version": "3.0.0",
+    "version": "3.1.0",
     "dependencies": {},
     "title": {
         "en": "browser_automation",
@@ -121,6 +121,34 @@
                             "pr": "Perfil a ser usado no navegador. Deixe em branco para usar o perfil padrão do Rocketbot."
                         },
                         "id": "folder",
+                        "css": "col-md-6",
+                        "data_type": "str",
+                        "default": null,
+                        "required": false
+                    },
+                    {
+                        "type": "folder_select",
+                        "placeholder": {
+                            "es": "C:/Users/Usuario/Descargas",
+                            "en": "C:/Users/User/Downloads",
+                            "pr": "C:/Usuários/Usuário/Downloads"
+                        },
+                        "description": {
+                            "es": "Carpeta donde se guardaran los archivos descargados.",
+                            "en": "Folder where the downloaded files will be saved..",
+                            "pr": "Pasta onde os arquivos baixados serão salvos."
+                        },
+                        "title": {
+                            "es": "Carpeta de descarga:",
+                            "en": "Download folder:",
+                            "pr": "Pasta de download:"
+                        },
+                        "help": {
+                            "es": "Ruta de la carpeta donde se alojaran los archivos descargados.",
+                            "en": "Path of the folder where the downloaded files will be stored.",
+                            "pr": "Caminho da pasta onde os arquivos baixados serão armazenados."
+                        },
+                        "id": "downloads_folder",
                         "css": "col-md-6",
                         "data_type": "str",
                         "default": null,
