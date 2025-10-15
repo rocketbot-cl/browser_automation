@@ -174,19 +174,18 @@ class BrowserAutomation:
             return
         import os
         d = os.path.abspath(self.download_dir)
-        # Asegurar que exista
+        
         os.makedirs(d, exist_ok=True)
-        # Normalizar separadores en Windows
+
         if SYSTEM == "Windows":
             d = d.replace("/", "\\")
         try:
-            # API clásica (sigue funcionando en Selenium 4)
             self.driver.execute_cdp_cmd("Page.setDownloadBehavior", {
                 "behavior": "allow",
                 "downloadPath": d
             })
         except Exception as e:
-            # Fallback adicional si alguna versión requiere flags distintos
+            
             try:
                 self.driver.execute_cdp_cmd("Page.setDownloadBehavior", {
                     "behavior": "allowAndName",
@@ -194,7 +193,7 @@ class BrowserAutomation:
                     "eventsEnabled": True
                 })
             except Exception:
-                print("No se pudo fijar la carpeta de descargas vía CDP:", repr(e))
+                print("Could not pin download folder via CDP:", repr(e))
 
 if module == "openBrowser":
 
