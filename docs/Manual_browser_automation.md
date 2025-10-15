@@ -1,3 +1,7 @@
+
+
+
+
 # browser_automation
   
 This module opens the browser without the alert that it is automated. Useful for working with extensions, captcha and desktopRecorder  
@@ -22,6 +26,7 @@ Open a selected browser
 |Browser|Browser you want to use.|Chrome|
 |URL|URL to access.|https://rocketbot.com/en|
 |Profile folder (Optional)|Profile folder (leave empty to use default rocketbot folder for testing).|C:/Users/User/Desktop/browser_profile|
+|Download folder|Folder where the downloaded files will be saved..|C:/Users/User/Downloads|
 |Port (Optional)|Port in which the automated browser will open. (Optional)|5002|
 |Search free port (Optional)|Search for a free port to open the automated browser. (Optional)|False|
 |Activate accessibility features|Activates the browser's accessibility features.|False|
@@ -30,5 +35,4 @@ Open a selected browser
   
 Close a selected browser
 |Parameters|Description|example|
-| --- | --- | --- |
 | --- | --- | --- |

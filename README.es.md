@@ -1,3 +1,7 @@
+
+
+
+
 # browser_automation
   
 Este modulo abre el navegador sin la alerta de que es automatizado. Útil para trabajar con extensiones, captcha y desktopRecorder  

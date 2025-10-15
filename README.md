@@ -1,3 +1,7 @@
+
+
+
+
 # browser_automation
   
 This module opens the browser without the alert that it is automated. Useful for working with extensions, captcha and desktopRecorder  

@@ -64,13 +64,14 @@ class BrowserAutomation:
         "firefox": "x64" + os.sep + "geckodriver"
     }
    
-    def __init__(self, browser="chrome", driver_path=None, browser_path="", folderPath="", port="5002", search=False):
+    def __init__(self, browser="chrome", driver_path=None, browser_path="", folderPath="", port="5002", search=False, download_dir=None):
         self.driver = None
         self.driver_path = driver_path
         self.browser = browser
         self.browser_path = browser_path
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.port = port
+        self.download_dir = download_dir
         
         if search:
             for i in range(2, 11):
@@ -134,6 +135,7 @@ class BrowserAutomation:
             chrome_options = Options()
             chrome_options.debugger_address = "127.0.0.1:" + self.port
             self.driver = Chrome(chrome_options=chrome_options, executable_path=self.driver_path)
+            self.set_download_dir()
             return self.driver
     
     def open_undetected(self, force_renderer=False):
@@ -160,11 +162,38 @@ class BrowserAutomation:
             print(self.driver_path)
             self.driver = uc.Chrome(options=options, browser_executable_path=self.driver_path, executable_path=self.driver_path)
             print("opening")
+            self.set_download_dir()
             # chrome_options = Options()
             # chrome_options.debugger_address = "127.0.0.1:" + self.port
             # self.driver = Chrome(chrome_options=chrome_options, executable_path=self.driver_path)
             return self.driver
+    def set_download_dir(self):
+        """Configura la carpeta de descargas mediante CDP (funciona también en headless).
+        Se llama automáticamente desde open() / open_undetected()."""
+        if not self.download_dir or not self.driver:
+            return
+        import os
+        d = os.path.abspath(self.download_dir)
+        
+        os.makedirs(d, exist_ok=True)
 
+        if SYSTEM == "Windows":
+            d = d.replace("/", "\\")
+        try:
+            self.driver.execute_cdp_cmd("Page.setDownloadBehavior", {
+                "behavior": "allow",
+                "downloadPath": d
+            })
+        except Exception as e:
+            
+            try:
+                self.driver.execute_cdp_cmd("Page.setDownloadBehavior", {
+                    "behavior": "allowAndName",
+                    "downloadPath": d,
+                    "eventsEnabled": True
+                })
+            except Exception:
+                print("Could not pin download folder via CDP:", repr(e))
 
 if module == "openBrowser":
 
@@ -175,7 +204,7 @@ if module == "openBrowser":
     port = GetParams("port")
     search_port = GetParams("search_port")
     force_renderer = eval(GetParams("force_renderer_accessibility")) if GetParams("force_renderer_accessibility") else False
-    
+    download_dir=GetParams("downloads_folder")
     if folder == None or folder == "":
         folder = " "
 
@@ -187,7 +216,7 @@ if module == "openBrowser":
     
     try:
         browser_ = "chrome"
-        browser_automation = BrowserAutomation(browser_, browser_path=path, folderPath=folder, port=port, search=search_port)
+        browser_automation = BrowserAutomation(browser_, browser_path=path, folderPath=folder, port=port, search=search_port, download_dir=download_dir)
         
         if browser == 'undetected_chrome':
             browser_driver = browser_automation.open_undetected(force_renderer=force_renderer)
