@@ -30,9 +30,11 @@ Open a selected browser
 |Port (Optional)|Port in which the automated browser will open. (Optional)|5002|
 |Search free port (Optional)|Search for a free port to open the automated browser. (Optional)|False|
 |Activate accessibility features|Activates the browser's accessibility features.|False|
+|ID or session|Unique ID to identify the browser session.|session|
 
 ### Close Browser
   
 Close a selected browser
 |Parameters|Description|example|
 | --- | --- | --- |
+|ID or session|Unique ID to identify the browser session to be closed.|session|

@@ -54,7 +54,14 @@ GetParams = GetParams # type: ignore
 SetVar = SetVar # type: ignore
 PrintException = PrintException # type: ignore
 
+session = GetParams("session")
+if not session:
+    session = 'default'
+    
 web = GetGlobals('web')
+if web.driver_actual_id in web.driver_list:
+    driver = web.driver_list[web.driver_actual_id]
+
 module = GetParams("module")
 class BrowserAutomation:
     global BASE_PATH, systems, SYSTEM, socket
@@ -205,6 +212,8 @@ if module == "openBrowser":
     search_port = GetParams("search_port")
     force_renderer = eval(GetParams("force_renderer_accessibility")) if GetParams("force_renderer_accessibility") else False
     download_dir=GetParams("downloads_folder")
+    session_id = GetParams("session")
+
     if folder == None or folder == "":
         folder = " "
 
@@ -223,6 +232,8 @@ if module == "openBrowser":
         else:
             browser_driver = browser_automation.open(force_renderer=force_renderer)
 
+        if session_id:
+            web.driver_actual_id = session_id
         web.driver_list[web.driver_actual_id] = browser_driver
         if url:
             browser_driver.get(url)
@@ -235,10 +246,27 @@ if module == "openBrowser":
         raise e
 
 if module == "closeBrowser":
-    browser_driver = web.driver_list[web.driver_actual_id]
-    # browser_windows = browser_driver.window_handles
-    # for window in browser_windows:
-    #     browser_driver.switch_to.window(window)
-    #     browser_driver.close()
-    browser_driver.close()
-    browser_driver.quit()
+    session_id = GetParams("session")
+
+    if session_id:
+        driver_id = session_id.strip()
+    else:
+        driver_id = getattr(web, "driver_actual_id", "default")
+
+    browser_driver = web.driver_list.get(driver_id)
+
+    if browser_driver:
+        try:
+            browser_driver.close()
+        except Exception:
+            pass
+        try:
+            browser_driver.quit()
+        except Exception:
+            pass
+
+        try:
+            del web.driver_list[driver_id]
+        except Exception:
+            pass
+

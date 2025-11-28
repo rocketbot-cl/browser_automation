@@ -14,7 +14,7 @@
     "mac": true,
     "docker": true,
     "name": "browser_automation",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "dependencies": {},
     "title": {
         "en": "browser_automation",
@@ -232,6 +232,26 @@
                         "data_type": "bool",
                         "default": false,
                         "required": false
+                    },
+                    {
+                        "type": "input",
+                        "placeholder": {
+                            "en": "session",
+                            "es": "session",
+                            "pr": "session"
+                        },
+                        "title": {
+                            "es": "ID o sesión",
+                            "en": "ID or session",
+                            "pr": "ID ou sessão"
+                        },
+                        "description": {
+                            "es": "ID único para identificar la sesión del navegador.",
+                            "en": "Unique ID to identify the browser session.",
+                            "pr": "ID único para identificar a sessão do navegador."
+                        },
+                        "id": "session",
+                        "css": "col-md-6"
                     }
                 ]
             },
@@ -260,7 +280,28 @@
             },
             "form": {
                 "css": "modal-lg",
-                "inputs": []
+                "inputs": [
+                    {
+                        "type": "input",
+                        "placeholder": {
+                            "en": "session",
+                            "es": "session",
+                            "pr": "session"
+                        },
+                        "title": {
+                            "es": "ID o sesión",
+                            "en": "ID or session",
+                            "pr": "ID ou sessão"
+                        },
+                        "description": {
+                            "es": "ID único para identificar la sesión del navegador a cerrar.",
+                            "en": "Unique ID to identify the browser session to be closed.",
+                            "pr": "ID único para identificar a sessão do navegador a ser fechada."
+                        },
+                        "id": "session",
+                        "css": "col-md-6"
+                    }
+                ]
             },
             "linux": true,
             "windows": true,

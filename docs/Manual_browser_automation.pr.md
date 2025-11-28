@@ -30,9 +30,11 @@ Abre o navegador selecionado
 |Porta (Opcional)|Porta em que o navegador automatizado será aberto. (Opcional)|5002|
 |Procurar porta livre (Opcional)|Procurar por uma porta livre para abrir o navegador automatizado. (Opcional)|False|
 |Ativar recursos de acessibilidade|Ativa os recursos de acessibilidade do navegador.|False|
+|ID ou sessão|ID único para identificar a sessão do navegador.|session|
 
 ### Fechar Navegador
   
 Fecha o navegador selecionado
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
+|ID ou sessão|ID único para identificar a sessão do navegador a ser fechada.|session|

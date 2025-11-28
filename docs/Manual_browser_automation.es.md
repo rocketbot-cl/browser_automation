@@ -9,7 +9,6 @@ Este modulo abre el navegador sin la alerta de que es automatizado. Útil para t
 *Read this in other languages: [English](Manual_browser_automation.md), [Português](Manual_browser_automation.pr.md), [Español](Manual_browser_automation.es.md)*
   
 ![banner](imgs/Banner_browser_automation.png)
-
 ## Como instalar este módulo
   
 Para instalar el módulo en Rocketbot Studio, se puede hacer de dos formas:
@@ -31,9 +30,11 @@ Abre el navegador seleccionado.
 |Puerto (Optional)|Puerto en el cual se abrirá el navegador automatizado. (Opcional)|5002|
 |Buscar puerto libre (Optional)|Buscar puerto libre en el cual se abrirá el navegador automatizado. (Opcional)|False|
 |Activar características de accesibilidad|Activa las características de accesibilidad del navegador.|False|
+|ID o sesión|ID único para identificar la sesión del navegador.|session|
 
 ### Cerrar Navegador
   
 Cierra el navegador seleccionado.
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
+|ID o sesión|ID único para identificar la sesión del navegador a cerrar.|session|
