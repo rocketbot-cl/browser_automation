@@ -32,6 +32,7 @@ from selenium.webdriver.chrome.options import Options # type: ignore
 import platform
 import socket
 import subprocess
+import psutil
 
 BASE_PATH = tmp_global_obj["basepath"] # type: ignore
 cur_path = BASE_PATH + 'modules' + os.sep + 'browser_automation' + os.sep + 'libs' + os.sep
@@ -57,12 +58,17 @@ PrintException = PrintException # type: ignore
 session = GetParams("session")
 if not session:
     session = 'default'
-    
+
 web = GetGlobals('web')
-if web.driver_actual_id in web.driver_list:
-    driver = web.driver_list[web.driver_actual_id]
 
 module = GetParams("module")
+global terminate_chromedriver
+def terminate_chromedriver(port):
+    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+        if proc.info['name'] == 'chromedriver.exe' and f'--port={port}' in proc.info['cmdline']:
+            proc.kill()
+            break
+
 class BrowserAutomation:
     global BASE_PATH, systems, SYSTEM, socket
     
@@ -212,7 +218,7 @@ if module == "openBrowser":
     search_port = GetParams("search_port")
     force_renderer = eval(GetParams("force_renderer_accessibility")) if GetParams("force_renderer_accessibility") else False
     download_dir=GetParams("downloads_folder")
-    session_id = GetParams("session")
+    session = GetParams("session")
 
     if folder == None or folder == "":
         folder = " "
@@ -232,9 +238,8 @@ if module == "openBrowser":
         else:
             browser_driver = browser_automation.open(force_renderer=force_renderer)
 
-        if session_id:
-            web.driver_actual_id = session_id
-        web.driver_list[web.driver_actual_id] = browser_driver
+        web.driver_list[session] = browser_driver
+        web.driver_actual_id = session
         if url:
             browser_driver.get(url)
 
@@ -246,27 +251,24 @@ if module == "openBrowser":
         raise e
 
 if module == "closeBrowser":
-    session_id = GetParams("session")
+    try:
+        session = GetParams("session")
+        browser_driver = web.driver_list[session]
+        mod_chromedriver_port = browser_driver.service.port
+        browser_driver.close()
+        browser_driver.quit()
 
-    if session_id:
-        driver_id = session_id.strip()
-    else:
-        driver_id = getattr(web, "driver_actual_id", "default")
+        if session in web.driver_list:
+            web.driver_list[session].quit()
 
-    browser_driver = web.driver_list.get(driver_id)
-
-    if browser_driver:
+    except Exception as e:
         try:
-            browser_driver.close()
-        except Exception:
-            pass
-        try:
-            browser_driver.quit()
-        except Exception:
-            pass
-
-        try:
-            del web.driver_list[driver_id]
-        except Exception:
-            pass
+            terminate_chromedriver(mod_chromedriver_port)
+            if session in web.driver_list:
+                web.driver_list[session]
+                web.driver_list[session].quit()
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            raise e
 
