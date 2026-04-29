@@ -62,12 +62,32 @@ if not session:
 web = GetGlobals('web')
 
 module = GetParams("module")
-global terminate_chromedriver
+global terminate_chromedriver, _is_port_free, _find_free_port, _to_bool
 def terminate_chromedriver(port):
     for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
         if proc.info['name'] == 'chromedriver.exe' and f'--port={port}' in proc.info['cmdline']:
             proc.kill()
             break
+
+
+def _is_port_free(port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as port_socket:
+        return port_socket.connect_ex(('127.0.0.1', int(port))) != 0
+
+
+def _find_free_port(start_port=5002, end_port=5100):
+    for candidate_port in range(start_port, end_port + 1):
+        if _is_port_free(candidate_port):
+            return str(candidate_port)
+    raise RuntimeError("No free debugging port available for browser automation")
+
+
+def _to_bool(value):
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return False
+    return str(value).strip().lower() in ("true", "1", "yes", "on")
 
 class BrowserAutomation:
     global BASE_PATH, systems, SYSTEM, socket
@@ -77,30 +97,24 @@ class BrowserAutomation:
         "firefox": "x64" + os.sep + "geckodriver"
     }
    
-    def __init__(self, browser="chrome", driver_path=None, browser_path="", folderPath="", port="5002", search=False, download_dir=None):
+    def __init__(self, browser="chrome", driver_path=None, browser_path="", folderPath="", port="5002", search=False, download_dir=None, session_name="default"):
         self.driver = None
         self.driver_path = driver_path
         self.browser = browser
         self.browser_path = browser_path
-        soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.port = port
+        self.port = str(port)
         self.download_dir = download_dir
+        self.session_name = session_name or "default"
         
-        if search:
-            for i in range(2, 11):
-                port_ = 5000 + i
-                result = soc.connect_ex(('127.0.0.1', port_))
-                p = subprocess.Popen(f'netstat -a | find "127.0.0.1:{port_}"', stdout=subprocess.PIPE, shell=True)
-                output, err = p.communicate()
-                if not "established" in output.decode().lower():
-                    print(output.decode().lower())
-                    self.port = str(port_)
-                    break
+        if _to_bool(search):
+            self.port = _find_free_port()
+        elif not _is_port_free(self.port):
+            self.port = _find_free_port(start_port=int(self.port) + 1)
         
-        if folderPath != " ":
+        if folderPath and folderPath.strip() and folderPath != " ":
             self.profile_path = folderPath if " " not in folderPath else "\"" + folderPath + "\""
         else:
-            folderPath = os.path.join(BASE_PATH,'modules','browser_automation','profile')
+            folderPath = os.path.join(BASE_PATH, 'modules', 'browser_automation', 'profile', self.session_name)
             self.profile_path = folderPath if " " not in folderPath else "\"" + folderPath + "\""
     
     @property
@@ -231,7 +245,23 @@ if module == "openBrowser":
     
     try:
         browser_ = "chrome"
-        browser_automation = BrowserAutomation(browser_, browser_path=path, folderPath=folder, port=port, search=search_port, download_dir=download_dir)
+        if session in web.driver_list:
+            try:
+                web.driver_list[session].quit()
+            except Exception:
+                pass
+            finally:
+                web.driver_list.pop(session, None)
+
+        browser_automation = BrowserAutomation(
+            browser_,
+            browser_path=path,
+            folderPath=folder,
+            port=port,
+            search=search_port,
+            download_dir=download_dir,
+            session_name=session
+        )
         
         if browser == 'undetected_chrome':
             browser_driver = browser_automation.open_undetected(force_renderer=force_renderer)
@@ -257,16 +287,14 @@ if module == "closeBrowser":
         mod_chromedriver_port = browser_driver.service.port
         browser_driver.close()
         browser_driver.quit()
-
-        if session in web.driver_list:
-            web.driver_list[session].quit()
+        web.driver_list.pop(session, None)
 
     except Exception as e:
         try:
             terminate_chromedriver(mod_chromedriver_port)
             if session in web.driver_list:
-                web.driver_list[session]
                 web.driver_list[session].quit()
+                web.driver_list.pop(session, None)
         except Exception as e:
             import traceback
             traceback.print_exc()

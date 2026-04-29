@@ -162,9 +162,9 @@
                             "pr": "5002"
                         },
                         "description": {
-                            "es": "Puerto en el cual se abrirá el navegador automatizado. (Opcional)",
-                            "en": "Port in which the automated browser will open. (Optional)",
-                            "pr": "Porta em que o navegador automatizado será aberto. (Opcional)"
+                            "es": "Puerto en el cual se abrirá el navegador automatizado. Si el puerto indicado está ocupado, el módulo tomará el siguiente libre (Opcional)",
+                            "en": "Port in which the automated browser will open. If the specified port is occupied, the module will take the next available one. (Optional)",
+                            "pr": "Porta em que o navegador automatizado será aberto. Se a porta especificada estiver ocupada, o módulo usará a próxima disponível. (Opcional)"
                         },
                         "title": {
                             "es": "Puerto (Optional)",
