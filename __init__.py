@@ -281,22 +281,34 @@ if module == "openBrowser":
         raise e
 
 if module == "closeBrowser":
+    session = GetParams("session")
+    mod_chromedriver_port = None
+    
     try:
-        session = GetParams("session")
-        browser_driver = web.driver_list[session]
-        mod_chromedriver_port = browser_driver.service.port
-        browser_driver.close()
-        browser_driver.quit()
-        web.driver_list.pop(session, None)
-
+        browser_driver = web.driver_list.get(session)
+        if browser_driver:
+            mod_chromedriver_port = browser_driver.service.port
+            browser_driver.close()
+            browser_driver.quit()
+            web.driver_list.pop(session, None)
+        else:
+            print(f"Warning: Session '{session}' not found in driver_list. Available sessions: {list(web.driver_list.keys())}")
     except Exception as e:
+        import traceback
+        traceback.print_exc()
+        
+    finally:
         try:
-            terminate_chromedriver(mod_chromedriver_port)
-            if session in web.driver_list:
-                web.driver_list[session].quit()
-                web.driver_list.pop(session, None)
+            if mod_chromedriver_port:
+                terminate_chromedriver(mod_chromedriver_port)
         except Exception as e:
-            import traceback
-            traceback.print_exc()
-            raise e
+            pass
+        
+        if session in web.driver_list:
+            try:
+                web.driver_list[session].quit()
+            except Exception:
+                pass
+            finally:
+                web.driver_list.pop(session, None)
 
