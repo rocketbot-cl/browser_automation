@@ -150,10 +150,10 @@ class BrowserAutomation:
     def launch_browser(self, force_renderer=False):
         import subprocess
         if force_renderer:
-            print("for renderer")
-            subprocess.Popen(" ".join([self.browser_path, "--force-renderer-accessibility --kiosk-printing --remote-debugging-port="+self.port, "--user-data-dir=" + self.profile_path + ""]), shell=True)
+            # print("for renderer")
+            subprocess.Popen(" ".join([self.browser_path, "--force-renderer-accessibility --kiosk-printing --remote-debugging-port=" + self.port, "--user-data-dir=" + self.profile_path, "--disable-features=LocalNetworkAccessChecks"]), shell=True)
         else:
-            subprocess.Popen(" ".join([self.browser_path, "--kiosk-printing --remote-debugging-port="+self.port, "--user-data-dir=" + self.profile_path + ""]), shell=True)
+            subprocess.Popen(" ".join([self.browser_path, "--kiosk-printing --remote-debugging-port=" + self.port, "--user-data-dir=" + self.profile_path, "--disable-features=LocalNetworkAccessChecks"]), shell=True)
     
     def open(self, force_renderer=False):
         global Options, Chrome
@@ -167,33 +167,34 @@ class BrowserAutomation:
     
     def open_undetected(self, force_renderer=False):
         global Options, Chrome
-        self.launch_browser()
+        self.launch_browser(force_renderer=force_renderer)
+        # Wait until Chrome has opened the remote debugging port before connecting.
+        import time
+        for _ in range(40):  # up to 20 seconds
+            if not _is_port_free(self.port):
+                break
+            time.sleep(0.5)
+        else:
+            raise RuntimeError(f"Chrome did not open debugging port {self.port} in time")
         if self.browser == "chrome":
-            import r_undetected_chromedriver as uc # type: ignore
-            print(uc.__file__)
-            # uc.install(
-            #     executable_path = self.driver_path ,
-            # )
-            options = uc.ChromeOptions()
-            options.add_argument('--no-sandbox')
-            if force_renderer:
-                options.add_argument('--force-renderer-accessibility')
-            # options.add_argument('--headless')
-            # options.add_argument('--enable-javascript')
-            # options.add_argument('--disable-gpu')
-            # options.experimental_options["debuggerAddress"] = "127.0.0.1:" + self.port
-            options.debugger_address = "127.0.0.1:" + self.port
-            user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15'
-            options.add_argument('User-Agent={0}'.format(user_agent))
-            options.user_data_dir = self.profile_path
-            print(self.driver_path)
-            self.driver = uc.Chrome(options=options, browser_executable_path=self.driver_path, executable_path=self.driver_path)
-            print("opening")
+            # Use plain selenium to attach — uc.Chrome() adds many browser args
+            # (--window-size, --start-maximized, --remote-debugging-port, etc.) that
+            # cause chromedriver to launch a SECOND Chrome instead of attaching to the
+            # existing one when both args and debuggerAddress are present.
+            chrome_options = Options()
+            chrome_options.debugger_address = "127.0.0.1:" + self.port
+            self.driver = Chrome(chrome_options=chrome_options, executable_path=self.driver_path)
+            # Anti-detection: remove navigator.webdriver from current session and all future pages
+            self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+            self.driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+                "source":
+                    "const newProto = navigator.__proto__;"
+                    "delete newProto.webdriver;"
+                    "navigator.__proto__ = newProto;"
+            })
             self.set_download_dir()
-            # chrome_options = Options()
-            # chrome_options.debugger_address = "127.0.0.1:" + self.port
-            # self.driver = Chrome(chrome_options=chrome_options, executable_path=self.driver_path)
             return self.driver
+        
     def set_download_dir(self):
         """Configura la carpeta de descargas mediante CDP (funciona también en headless).
         Se llama automáticamente desde open() / open_undetected()."""
@@ -281,34 +282,21 @@ if module == "openBrowser":
         raise e
 
 if module == "closeBrowser":
-    session = GetParams("session")
-    mod_chromedriver_port = None
-    
     try:
-        browser_driver = web.driver_list.get(session)
-        if browser_driver:
-            mod_chromedriver_port = browser_driver.service.port
-            browser_driver.close()
-            browser_driver.quit()
-            web.driver_list.pop(session, None)
-        else:
-            print(f"Warning: Session '{session}' not found in driver_list. Available sessions: {list(web.driver_list.keys())}")
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        
-    finally:
-        try:
-            if mod_chromedriver_port:
-                terminate_chromedriver(mod_chromedriver_port)
-        except Exception as e:
-            pass
-        
-        if session in web.driver_list:
-            try:
-                web.driver_list[session].quit()
-            except Exception:
-                pass
-            finally:
-                web.driver_list.pop(session, None)
+        session = GetParams("session")
+        browser_driver = web.driver_list[session]
+        mod_chromedriver_port = browser_driver.service.port
+        browser_driver.close()
+        browser_driver.quit()
+        web.driver_list.pop(session, None)
 
+    except Exception as e:
+        try:
+            terminate_chromedriver(mod_chromedriver_port)
+            if session in web.driver_list:
+                web.driver_list[session].quit()
+                web.driver_list.pop(session, None)
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            raise e
