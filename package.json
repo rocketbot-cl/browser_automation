@@ -246,9 +246,9 @@
                             "pr": "ID ou sessão"
                         },
                         "description": {
-                            "es": "ID único para identificar la sesión del navegador.",
-                            "en": "Unique ID to identify the browser session.",
-                            "pr": "ID único para identificar a sessão do navegador."
+                            "es": "ID único para identificar la sesión del navegador. La primera vez que se abre el navegador con una nueva ID, sera necesario cerrarlo manualmente.",
+                            "en": "Unique ID to identify the browser session. The first time you open the browser with a new ID, it will be necessary to close it manually.",
+                            "pr": "ID único para identificar a sessão do navegador. A primeira vez que você abrir o navegador com um novo ID, será necessário fechá-lo manualmente."
                         },
                         "id": "session",
                         "css": "col-md-6"
