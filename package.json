@@ -14,7 +14,7 @@
     "mac": true,
     "docker": true,
     "name": "browser_automation",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "dependencies": {},
     "title": {
         "en": "browser_automation",
@@ -162,9 +162,9 @@
                             "pr": "5002"
                         },
                         "description": {
-                            "es": "Puerto en el cual se abrirá el navegador automatizado. (Opcional)",
-                            "en": "Port in which the automated browser will open. (Optional)",
-                            "pr": "Porta em que o navegador automatizado será aberto. (Opcional)"
+                            "es": "Puerto en el cual se abrirá el navegador automatizado. Si el puerto indicado está ocupado, el módulo tomará el siguiente libre (Opcional)",
+                            "en": "Port in which the automated browser will open. If the specified port is occupied, the module will take the next available one. (Optional)",
+                            "pr": "Porta em que o navegador automatizado será aberto. Se a porta especificada estiver ocupada, o módulo usará a próxima disponível. (Opcional)"
                         },
                         "title": {
                             "es": "Puerto (Optional)",
@@ -232,6 +232,26 @@
                         "data_type": "bool",
                         "default": false,
                         "required": false
+                    },
+                    {
+                        "type": "input",
+                        "placeholder": {
+                            "en": "session",
+                            "es": "session",
+                            "pr": "session"
+                        },
+                        "title": {
+                            "es": "ID o sesión",
+                            "en": "ID or session",
+                            "pr": "ID ou sessão"
+                        },
+                        "description": {
+                            "es": "ID único para identificar la sesión del navegador. La primera vez que se abre el navegador con una nueva ID, sera necesario cerrarlo manualmente.",
+                            "en": "Unique ID to identify the browser session. The first time you open the browser with a new ID, it will be necessary to close it manually.",
+                            "pr": "ID único para identificar a sessão do navegador. A primeira vez que você abrir o navegador com um novo ID, será necessário fechá-lo manualmente."
+                        },
+                        "id": "session",
+                        "css": "col-md-6"
                     }
                 ]
             },
@@ -260,7 +280,28 @@
             },
             "form": {
                 "css": "modal-lg",
-                "inputs": []
+                "inputs": [
+                    {
+                        "type": "input",
+                        "placeholder": {
+                            "en": "session",
+                            "es": "session",
+                            "pr": "session"
+                        },
+                        "title": {
+                            "es": "ID o sesión",
+                            "en": "ID or session",
+                            "pr": "ID ou sessão"
+                        },
+                        "description": {
+                            "es": "ID único para identificar la sesión del navegador a cerrar.",
+                            "en": "Unique ID to identify the browser session to be closed.",
+                            "pr": "ID único para identificar a sessão do navegador a ser fechada."
+                        },
+                        "id": "session",
+                        "css": "col-md-6"
+                    }
+                ]
             },
             "linux": true,
             "windows": true,
