@@ -169,11 +169,11 @@ class BrowserAutomation:
         global Options, Chrome
         self.launch_browser(force_renderer=force_renderer)
         # Wait until Chrome has opened the remote debugging port before connecting.
-        import time
+        from time import sleep
         for _ in range(40):  # up to 20 seconds
             if not _is_port_free(self.port):
                 break
-            time.sleep(0.5)
+            sleep(0.5)
         else:
             raise RuntimeError(f"Chrome did not open debugging port {self.port} in time")
         if self.browser == "chrome":
