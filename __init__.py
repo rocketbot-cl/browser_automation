@@ -149,11 +149,13 @@ class BrowserAutomation:
 
     def launch_browser(self, force_renderer=False):
         import subprocess
+        browser_path = self.browser_path
+        if SYSTEM == "Darwin":
+            browser_path = f'"{browser_path}"'
         if force_renderer:
-            # print("for renderer")
-            subprocess.Popen(" ".join([self.browser_path, "--force-renderer-accessibility --kiosk-printing --remote-debugging-port=" + self.port, "--user-data-dir=" + self.profile_path, "--disable-features=LocalNetworkAccessChecks"]), shell=True)
+            subprocess.Popen(" ".join([browser_path, "--force-renderer-accessibility --kiosk-printing --remote-debugging-port=" + self.port, "--user-data-dir=" + self.profile_path, "--disable-features=LocalNetworkAccessChecks"]), shell=True)
         else:
-            subprocess.Popen(" ".join([self.browser_path, "--kiosk-printing --remote-debugging-port=" + self.port, "--user-data-dir=" + self.profile_path, "--disable-features=LocalNetworkAccessChecks"]), shell=True)
+            subprocess.Popen(" ".join([browser_path, "--kiosk-printing --remote-debugging-port=" + self.port, "--user-data-dir=" + self.profile_path, "--disable-features=LocalNetworkAccessChecks"]), shell=True)
     
     def open(self, force_renderer=False):
         global Options, Chrome
