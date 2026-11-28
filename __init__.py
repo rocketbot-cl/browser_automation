@@ -64,10 +64,19 @@ web = GetGlobals('web')
 module = GetParams("module")
 global terminate_chromedriver, _is_port_free, _find_free_port, _to_bool
 def terminate_chromedriver(port):
+    if not port:
+        return
     for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
-        if proc.info['name'] == 'chromedriver.exe' and f'--port={port}' in proc.info['cmdline']:
-            proc.kill()
-            break
+        try:
+            name = (proc.info.get('name') or '').lower()
+            cmdline = proc.info.get('cmdline') or []
+            if name in ('chromedriver', 'chromedriver.exe') and any(
+                arg == f'--port={port}' for arg in cmdline
+            ):
+                proc.kill()
+                break
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            continue
 
 
 def _is_port_free(port):
@@ -172,7 +181,7 @@ class BrowserAutomation:
             self.browser_process = subprocess.Popen(arguments)
         else:
             self.browser_process = subprocess.Popen(" ".join(arguments), shell=True)
-       
+
     def open(self, force_renderer=False):
         global Options, Chrome
         self.launch_browser(force_renderer=force_renderer)
@@ -204,7 +213,7 @@ class BrowserAutomation:
             chrome_options.debugger_address = "127.0.0.1:" + self.port
             self.driver = Chrome(chrome_options=chrome_options, executable_path=self.driver_path)
             # Anti-detection: remove navigator.webdriver from current session and all future pages
-            self.driver._rocketbot_browser_process = self.browser_process            
+            self.driver._rocketbot_browser_process = self.browser_process
             self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
             self.driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
                 "source":
@@ -251,6 +260,10 @@ def close_browser_session(browser_driver):
     )
 
     if SYSTEM != "Darwin":
+        mod_chromedriver_port = getattr(
+            getattr(browser_driver, "service", None), "port", None
+        )
+
         try:
             browser_driver.close()
         except Exception:
@@ -259,7 +272,17 @@ def close_browser_session(browser_driver):
         try:
             browser_driver.quit()
         except Exception:
-            pass
+            if SYSTEM == "Windows":
+                if mod_chromedriver_port:
+                    try:
+                        terminate_chromedriver(mod_chromedriver_port)
+                    except Exception:
+                        pass
+
+                try:
+                    browser_driver.quit()
+                except Exception:
+                    pass
 
         return
 
@@ -334,11 +357,10 @@ if module == "openBrowser":
         raise e
 
 if module == "closeBrowser":
+    session = GetParams("session") or "default"
     try:
-        session = GetParams("session") or "default"
         browser_driver = web.driver_list.get(session)
         if browser_driver:
             close_browser_session(browser_driver)
     finally:
         web.driver_list.pop(session, None)
-
